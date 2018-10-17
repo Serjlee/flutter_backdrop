@@ -1,5 +1,3 @@
-library backdrop;
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -22,6 +20,8 @@ class BackdropScaffold extends StatefulWidget {
   final Widget title;
   final Widget backLayer;
   final Widget frontLayer;
+  final Widget bottom;
+  final bool hideBottom;
   final List<Widget> actions;
   final double headerHeight;
   final BorderRadius frontLayerBorderRadius;
@@ -32,6 +32,8 @@ class BackdropScaffold extends StatefulWidget {
     this.title,
     this.backLayer,
     this.frontLayer,
+    this.bottom,
+    this.hideBottom = true,
     this.actions = const <Widget>[],
     this.headerHeight = 32.0,
     this.frontLayerBorderRadius = const BorderRadius.only(
@@ -87,6 +89,9 @@ class _BackdropScaffoldState extends State<BackdropScaffold>
 
   void fling() {
     controller.fling(velocity: isTopPanelVisible ? -1.0 : 1.0);
+    if (widget.bottom != null && widget.hideBottom) {
+      setState(() {});
+    }
   }
 
   void showBackLayer() {
@@ -167,6 +172,8 @@ class _BackdropScaffoldState extends State<BackdropScaffold>
       child: Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
+          bottom:
+              !widget.hideBottom || isTopPanelVisible ? widget.bottom : null,
           title: widget.title,
           actions: widget.iconPosition == BackdropIconPosition.action
               ? <Widget>[BackdropToggleButton()] + widget.actions
@@ -226,3 +233,4 @@ class BackdropToggleButton extends StatelessWidget {
 }
 
 enum BackdropIconPosition { none, leading, action }
+
